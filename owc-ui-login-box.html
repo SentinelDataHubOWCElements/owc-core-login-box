@@ -1,152 +1,91 @@
 <link rel="import" href="../polymer/polymer-element.html">
 
+<!-- Import from Polymer 1 -->
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+
 <dom-module id="owc-ui-login-box">
-  
-  <!--VIEW-->
-  <template>
+    
+<!--VIEW-->
+<template>
     <!--Internal CSS-->
     <style is="custom-style">
         
-        .login-container {
-            margin: 0px;
+        *{
+            font-family: 'Roboto', 'Noto', sans-serif;
+            margin: 0 auto;
         }
 
-        #login-component {
-            @apply(--layout-vertical);
-            height: var(--loginheight, 500px);
-            width: var(--loginwidth, 100%);
-            overflow-y: auto;
-            overflow-x: auto;
+        .login-component{
+            width:200px;
         }
-
-        #user-component {
-            @apply(--layout-vertical);
-            height: var(--loginheight, 500px);
-            width: var(--loginwidth, 100%);
-            overflow-y: auto;
-            overflow-x: auto;
+        
+        .login-title{
+            text-align: center;
+            font-size: 1.7em;
+            font-weight: bold;
+            padding-bottom: 50px;
+            color: grey;
         }
 
         #wronglogin {
-            width: 100%;
-            text-align: center;
-            font-weight: bold;
+            font-size: 1.2em;
             color: rgb(190, 0, 0);
-            word-wrap: break-word;
-            white-space: normal;
-            font-size: 18px;
         }
 
-        paper-button {
-            background: #002664;
-            color: white;
-            padding: 5px 5px;
-            width: 100%;
-            font-size: 16px;
+        p.info{
+            font-size: 0.7em;
             font-weight: bold;
-            margin-top: 5px;
         }
 
-        paper-button[toggles][active].colorful {
+        .info-input{
+            margin-bottom: 20px;        
+            height: 20px;            
+            border-radius: 3px;
+        }
+
+        .log-button{
             background-color: #002664;
-        }
-
-        paper-button[toggles][active][raised].colorful {
-            background-color: rgba(66, 133, 244, 0.75);
-        }
-
-        #signupButton {
-            background: rgb(173, 173, 173) !important;
-        }
-
-        paper-button[toggles][active][raised].signup {
-            background: rgba(173, 173, 173, 0.75) !important;
-        }
-
-        .element-container {
-            margin-top: 10px;
-        }
-
-        .roles {
-            display: flex;
-        }
-
-        .user-badge {
-            color: #373B50;
-            margin-right: 3px;
-            font-size: 16px;
-            margin-top: 3px;
-        }
-
-        .user-h4 {
-            color: #373B50;
-            font-size: 18px;
-            text-align: left;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .user-h5 {
-            color: #373B50;
-            font-size: 14px;
-            text-align: left;
-            font-weight: normal;
-            margin-bottom: 15px;
-        }
-
-        .user-button {
             margin-top: 20px;
-        }
-
-        .forgotPassword{
-          text-align: center;
-          padding-top: 10px;
-          padding-bottom: 10px;
-          font-weight: bold;
-          font-size: 14px;
-        }
-
-        .forgotPassword:hover{
-          cursor: pointer;
-          text-decoration: underline;
-        }
-
-        :host {
-            display: block;
-        }
-
-        .login-title{
-          color:grey;
-        }
-        
-        .fitter{
-          width: 100%;
+            margin-left: 0 !important;
+            width: 170px !important;
+            color: aliceblue;
+            text-align: center;
+            font-size: 1.5em;
+            height: 30px;
+            border-radius: 3px;
+            cursor: pointer;
         }
     </style>
 
     <!--Demo-1 Template. Login Component simulation-->
-    <h3 class="login-title">[[componentName]]</h3>
+    <div class="login-title">Account</div>
     
     <!--NOT LOGGED-->
-    <div id="test-login-component" hidden$="{{isLogged}}" style="width:200px">
-        <p>Username</p>
-        <input id="username" label="username" value="{{username::input}}">
-        <p>Password</p>
-        <input id="password" label="password" type="password" value="{{password::input}}">
+    <div class="login-component" hidden$="{{isLogged}}">
+        <p class="info">Username</p>
+        <input class="info-input" id="username" label="username" value="{{username::input}}">
+        <p class="info">Password</p>
+        <input class="info-input" id="password" label="password" type="password" value="{{password::input}}">
 
-        <span id="wronglogin" hidden$="{{!isBadCredentials}}" style="color: red;">wrong login</span>
-        <br>
-        <br>
-        <paper-button raised class="user-button colorful" id="loginButton" on-click="tryLogin" title="Login" style="cursor: pointer;">Login</paper-button>
+        <!-- Wrong login div, showed on Bad Credentials -->
+        <span id="wronglogin" hidden$="{{!isBadCredentials}}">wrong login</span>
+
+        <div class="log-button" on-click="tryLogin" title="Login">Login</div>
     </div>
   
     <!--LOGGED-->
-    <div id="logged-component" hidden$="{{!isLogged}}" style="width:200px">
-        <p>Logged functions here</p>
-            <div>
-            <paper-button raised class="user-button colorful" id="logoutButton" on-click="tryLogout" title="Logout" style="cursor: pointer;">Logout</paper-button>
-          </div>
+    <div class="login-component" hidden$="{{!isLogged}}">
+        <br><p>Logged functions here</p><br>
+        <div class="log-button" on-click="tryLogout" title="Logout">Logout</div>
     </div>
+
+    <br>
+    <br>
+    <br>
+    <paper-button>paper button test</paper-button>
+            <paper-checkbox>Checkbox</paper-checkbox>
+        <paper-checkbox checked>Checkbox</paper-checkbox>
   </template>
 
   <!--SCRIPT-->
