@@ -1,180 +1,215 @@
 <link rel="import" href="../polymer/polymer-element.html">
 
-<!-- Import from Polymer 1 -->
+<!-- Import -->
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
 
 <dom-module id="owc-ui-login-box">
-    
-<!--VIEW-->
-<template>
-    <!--Internal CSS-->
-    <style is="custom-style">
-        
-        *{
-            font-family: 'Roboto', 'Noto', sans-serif;
-            margin: 0 auto;
-        }
+    <!--VIEW-->
+    <template>
+        <!--Internal CSS-->
+        <style is="custom-style">
+            * {
+                font-family: 'Roboto', 'Noto', sans-serif;
+                margin: 0 auto;
+            }
 
-        .login-component{
-            width:200px;
-        }
-        
-        .login-title{
-            text-align: center;
-            font-size: 1.7em;
-            font-weight: bold;
-            padding-bottom: 50px;
-            color: grey;
-        }
+            .login-component {
+                width: 200px;
+            }
 
-        #wronglogin {
-            font-size: 1.2em;
-            color: rgb(190, 0, 0);
-        }
+            .login-title {
+                text-align: center;
+                font-size: 1.4em;
+                font-weight: bold;
+                padding-bottom: 50px;
+                color: rgb(51, 51, 51);
+            }
 
-        p.info{
-            font-size: 0.7em;
-            font-weight: bold;
-        }
+            #wronglogin {
+                font-size: 1em;
+                font-weight: bold;
+                color: rgb(190, 0, 0);
+            }
 
-        .info-input{
-            margin-bottom: 20px;        
-            height: 20px;            
-            border-radius: 3px;
-        }
+            p.info {
+                font-size: 0.7em;
+                color: rgb(137, 137, 137)
+            }
 
-        .log-button{
-            background-color: #002664;
-            margin-top: 20px;
-            margin-left: 0 !important;
-            width: 170px !important;
-            color: aliceblue;
-            text-align: center;
-            font-size: 1.5em;
-            height: 30px;
-            border-radius: 3px;
-            cursor: pointer;
-        }
-    </style>
+            .info-input {
+                margin-bottom: 20px;
+                height: 20px;
+                border-radius: 3px;
+            }
 
-    <!--Demo-1 Template. Login Component simulation-->
-    <div class="login-title">Account</div>
-    
-    <!--NOT LOGGED-->
-    <div class="login-component" hidden$="{{isLogged}}">
-        <p class="info">Username</p>
-        <input class="info-input" id="username" label="username" value="{{username::input}}">
-        <p class="info">Password</p>
-        <input class="info-input" id="password" label="password" type="password" value="{{password::input}}">
+            .log-button {
+                margin-left: 0 !important;
+                width: 170px !important;
+                color: aliceblue;
+                text-align: center;
+                border-radius: 3px;
+                cursor: pointer;
+            }
 
-        <!-- Wrong login div, showed on Bad Credentials -->
-        <span id="wronglogin" hidden$="{{!isBadCredentials}}">wrong login</span>
+            paper-button {
+                background: #002664;
+                color: white;
+                padding: 5px 5px;
+                width: 100%;
+                font-size: 16px;
+                font-weight: bold;
+                margin-top: 5px;
+            }
 
-        <div class="log-button" on-click="tryLogin" title="Login">Login</div>
-    </div>
-  
-    <!--LOGGED-->
-    <div class="login-component" hidden$="{{!isLogged}}">
-        <br><p>Logged functions here</p><br>
-        <div class="log-button" on-click="tryLogout" title="Logout">Logout</div>
-    </div>
+            paper-button[toggles][active].colorful {
+                background-color: #002664;
+            }
 
-    <br>
-    <br>
-    <br>
-    <paper-button>paper button test</paper-button>
-            <paper-checkbox>Checkbox</paper-checkbox>
-        <paper-checkbox checked>Checkbox</paper-checkbox>
-  </template>
+            paper-button[toggles][active][raised].colorful {
+                background-color: rgba(66, 133, 244, 0.75);
+            }
 
-  <!--SCRIPT-->
-  <script>
-    class OwcUiLoginBox extends Polymer.Element {
-        static get is() { return 'owc-ui-login-box'; }
-        static get properties() {
-            return {
-                componentName:{
-                    type: String,
-                    value: 'owc-ui-login-box'
-                },
+            paper-button[toggles][active][raised].signup {
+                background: rgba(216, 7, 7, 0.75) !important;
+            }
 
-                _ctx: {
-                    type: Object,
-                    value: {}
-                },
-                
-                //Local variable to set status of UI depending on this variable
-                isLogged: {
-                    type: Boolean,
-                    value: false
-                },
-                
-                //Local varible to show bad credentials message div 
-                isBadCredentials: {
-                    type: Boolean,
-                    value: false
-                },
+            .paper {
+                background: #002664;
+                color: white;
+                padding: 5px 5px;
+                width: 100%;
+                font-size: 16px;
+                font-weight: bold;
+                margin-top: 5px;
+            }
 
-                username:{
-                    type: String,
-                    value: ""
-                },
+            paper-input {
+                max-width: 400px;
+                margin: auto;
+            }
 
-                password:{
-                    type: String,
-                    value: ""
+            iron-icon,
+            div[suffix] {
+                color: hsl(0, 0%, 50%);
+                margin-right: 12px;
+            }
+        </style>
+
+        <!--Demo-1 Template. Login Component simulation-->
+        <div class="login-title">Account</div>
+
+        <!--LOGGED-->
+        <div class="login-component" hidden$="{{!isLogged}}">
+            <br>
+            <p>Logged functions here</p>
+            <br>
+            <paper-button class="log-button" on-click="tryLogout">LOGOUT</paper-button>
+        </div>
+
+        <!--NOT LOGGED-->
+        <div class="login-component" hidden$="{{isLogged}}">
+            <p class="info">Username</p>
+            <input class="info-input" id="username" label="username" value="{{username::input}}">
+            <p class="info">Password</p>
+            <input class="info-input" id="password" label="password" type="password" value="{{password::input}}">
+
+            <!-- Wrong login div, showed on Bad Credentials -->
+            <span id="wronglogin" hidden$="{{!isBadCredentials}}">The username and password you entered don't match.</span>
+            <div class="log-button paper" on-click="tryLogin" title="Login">LOGIN</div>
+            <!-- <paper-button on-click="tryLogin">test</paper-button> -->
+        </div>
+
+    </template>
+
+    <!--SCRIPT-->
+    <script>
+        class OwcUiLoginBox extends Polymer.Element {
+            static get is() { return 'owc-ui-login-box'; }
+            static get properties() {
+                return {
+                    componentName: {
+                        type: String,
+                        value: 'owc-ui-login-box'
+                    },
+
+                    _ctx: {
+                        type: Object,
+                        value: {}
+                    },
+
+                    //Local variable to set status of UI depending on this variable
+                    isLogged: {
+                        type: Boolean,
+                        value: false
+                    },
+
+                    //Local varible to show bad credentials message div 
+                    isBadCredentials: {
+                        type: Boolean,
+                        value: false
+                    },
+
+                    username: {
+                        type: String,
+                        value: ""
+                    },
+
+                    password: {
+                        type: String,
+                        value: ""
+                    }
+                };
+            }
+
+            //Method called when this element is created
+            constructor() {
+                super();
+            }
+
+            //Try Login with usernme and password in input fields
+            tryLogin() {
+                var self = this;
+
+                //Get Parameter from Input fields
+                var user = self.username;
+                var pass = self.password;
+                console.log("Auth-Demo TryLogin. USERNAME: ", user, " PASSWORD ", pass)
+
+                //Call authentication-manager login  
+                self._ctx.am.login(user, pass);
+
+                //Wait 2 seconds before checking if user is logged
+                setTimeout(function () {
+                    self.checkLogged();
+                }, 2000);
+            }
+
+            //Try Logout
+            tryLogout() {
+                var self = this;
+                var logoutResult = self._ctx.am.logout();
+
+                //If user is logged out properly, set local proper UI
+                if (logoutResult == true) {
+                    self.isLogged = !logoutResult; //local variable is the !logout result
                 }
-            };
-        }
+            }
 
-        //Method called when this element is created
-        constructor(){
-            super();
-        }
+            //Check if the user is logged, checking the authentication-manager component logged value
+            checkLogged() {
+                var self = this;
+                var result = self._ctx.am.isLogged();
+                self.setUI(result);
+            }
 
-        //Try Login with usernme and password in input fields
-        tryLogin(){
-            var self = this;
-            
-            //Get Parameter from Input fields
-            var user = self.username;
-            var pass = self.password;
-            console.log("Auth-Demo TryLogin. USERNAME: ", user, " PASSWORD ", pass)
-
-            //Call authentication-manager login  
-            self._ctx.am.login(user, pass);
-
-            //Wait 2 seconds before checking if user is logged
-            setTimeout(function() {
-                self.checkLogged();
-            }, 2000);
-        }
-
-        //Try Logout
-        tryLogout(){
-            var self = this;
-            var logoutResult = self._ctx.am.logout();
-            
-            //If user is logged out properly, set local proper UI
-            if(logoutResult == true){
-                self.isLogged = !logoutResult; //local variable is the !logout result
+            setUI(logg) {
+                var self = this;
+                self.isLogged = logg;
+                self.isBadCredentials = !logg; //Set bad Credentials to true if result is false
             }
         }
-
-        //Check if the user is logged, checking the authentication-manager component logged value
-        checkLogged(){
-            var self = this;
-            var result = self._ctx.am.isLogged(); 
-            self.setUI(result);
-        }
-
-        setUI(logg){
-            var self = this;
-            self.isLogged = logg;
-            self.isBadCredentials = !logg; //Set bad Credentials to true if result is false
-        }
-    }
-    window.customElements.define(OwcUiLoginBox.is, OwcUiLoginBox);
-  </script>
+        window.customElements.define(OwcUiLoginBox.is, OwcUiLoginBox);
+    </script>
 </dom-module>
