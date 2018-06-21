@@ -51,10 +51,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   Polymer({
     is: 'x-key-aware',
 
-    behaviors: [Polymer.IronA11yKeysBehavior],
+    behaviors: [
+      Polymer.IronA11yKeysBehavior
+    ],
 
     properties: {
-      pressed: {type: String, readOnly: true, value: ''},
+      pressed: {
+        type: String,
+        readOnly: true,
+        value: ''
+      },
 
       boundKeys: {
         type: Array,
@@ -63,7 +69,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
 
-      preventDefault: {type: Boolean, value: true, notify: true},
+      preventDefault: {
+        type: Boolean,
+        value: true,
+        notify: true
+      },
 
       keyEventTarget: {
         type: Object,
@@ -74,8 +84,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     keyBindings: {
-      '* pageup pagedown left right down up home end space enter @ ~ " $ ? ! \\ + : # backspace':
-          '_updatePressed',
+      '* pageup pagedown left right down up home end space enter @ ~ " $ ? ! \\ + : # backspace': '_updatePressed',
       'a': '_updatePressed',
       'shift+a alt+a': '_updatePressed',
       'shift+tab shift+space': '_updatePressed'
@@ -87,7 +96,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       if (this.preventDefault) {
         event.preventDefault();
       }
-      this._setPressed(this.pressed + event.detail.combo + ' pressed!\n');
+      this._setPressed(
+        this.pressed + event.detail.combo + ' pressed!\n'
+      );
     }
   });
 </script>

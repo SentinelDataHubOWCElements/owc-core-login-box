@@ -2,7 +2,8 @@
 
 <!-- Import -->
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/paper-input/paper-input.html">
 
 
 <dom-module id="owc-ui-login-box">
@@ -110,16 +111,35 @@
 
         <!--NOT LOGGED-->
         <div class="login-component" hidden$="{{isLogged}}">
-            <p class="info">Username</p>
+            <!-- <p class="info">Username</p>
             <input class="info-input" id="username" label="username" value="{{username::input}}">
             <p class="info">Password</p>
-            <input class="info-input" id="password" label="password" type="password" value="{{password::input}}">
+            <input class="info-input" id="password" label="password" type="password" value="{{password::input}}"> -->
 
             <!-- Wrong login div, showed on Bad Credentials -->
             <span id="wronglogin" hidden$="{{!isBadCredentials}}">The username and password you entered don't match.</span>
             <div class="log-button paper" on-click="tryLogin" title="Login">LOGIN</div>
             <!-- <paper-button on-click="tryLogin">test</paper-button> -->
         </div>
+        
+        <br>
+        <hr>
+
+        <paper-input always-float-label label="Username" id="username" value="{{username::input}}"></paper-input>
+        <paper-input always-float-label label="Password" id="password" value="{{password::input}}"></paper-input>
+
+        
+        
+        <paper-input label="username">
+            <iron-icon icon="mail" slot="prefix"></iron-icon>
+            <div slot="suffix">@email.com</div>
+        </paper-input>
+
+
+        <paper-button>link</paper-button>
+        <paper-button raised>raised</paper-button>
+        <paper-button toggles raised>toggles</paper-button>
+        <paper-button disabled>disabled</paper-button>
 
     </template>
 
