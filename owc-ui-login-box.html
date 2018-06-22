@@ -1,16 +1,15 @@
 <link rel="import" href="../polymer/polymer-element.html">
 
 <!-- Import -->
-<link rel="import" href="../../bower_components/polymer/polymer.html">
+<!-- <link rel="import" href="../../bower_components/polymer/polymer.html"> -->
 <link rel="import" href="bower_components/paper-button/paper-button.html">
 <link rel="import" href="bower_components/paper-input/paper-input.html">
-
 
 <dom-module id="owc-ui-login-box">
     <!--VIEW-->
     <template>
         <!--Internal CSS-->
-        <style is="custom-style">
+        <style>
             * {
                 font-family: 'Roboto', 'Noto', sans-serif;
                 margin: 0 auto;
@@ -29,12 +28,13 @@
             }
 
             #wronglogin {
-                font-size: 1em;
+                width: 180px;
+                font-size: 0.8em;
                 font-weight: bold;
                 color: rgb(190, 0, 0);
             }
 
-            p.info {
+            /* p.info {
                 font-size: 0.7em;
                 color: rgb(137, 137, 137)
             }
@@ -52,16 +52,15 @@
                 text-align: center;
                 border-radius: 3px;
                 cursor: pointer;
-            }
+            } */
 
             paper-button {
                 background: #002664;
                 color: white;
-                padding: 5px 5px;
-                width: 100%;
-                font-size: 16px;
+                margin: 15px 25px;
+                padding: 5px 40px;
+                font-size: 18px;
                 font-weight: bold;
-                margin-top: 5px;
             }
 
             paper-button[toggles][active].colorful {
@@ -76,76 +75,52 @@
                 background: rgba(216, 7, 7, 0.75) !important;
             }
 
-            .paper {
-                background: #002664;
-                color: white;
-                padding: 5px 5px;
-                width: 100%;
-                font-size: 16px;
-                font-weight: bold;
-                margin-top: 5px;
-            }
-
-            paper-input {
+            /* paper-input {
                 max-width: 400px;
                 margin: auto;
-            }
+            } */
 
             iron-icon,
             div[suffix] {
                 color: hsl(0, 0%, 50%);
                 margin-right: 12px;
             }
+
         </style>
 
         <!--Demo-1 Template. Login Component simulation-->
         <div class="login-title">Account</div>
 
-        <!--LOGGED-->
+        <!--USER NOT LOGGED-->
+        <div class="login-component" hidden$="{{isLogged}}">
+            <!-- <p class="info">Username</p>
+            <input class="info-input" id="username" label="username" value="{{username::input}}">
+            <p class="info">Password</p>
+            <input class="info-input" id="password" label="password" type="password" value="{{password::input}}"> -->
+            <paper-input float-label label="Username" id="username" value="{{username::input}}"></paper-input>
+            <paper-input float-label label="Password" id="password" value="{{password::input}}"></paper-input>
+
+            <!-- Wrong login div, showed on Bad Credentials -->
+            <span id="wronglogin" hidden$="{{!isBadCredentials}}">The username and password you entered don't match.</span>
+            <br>
+            <br>
+
+            <!-- <div class="log-button paper" on-click="tryLogin" title="Login">LOGIN</div> -->
+            <paper-button raised on-click="tryLogin" title="Login">LOGIN</paper-button>
+        </div>
+
+        <!--USER LOGGED-->
         <div class="login-component" hidden$="{{!isLogged}}">
             <br>
             <p>Logged functions here</p>
             <br>
             <paper-button class="log-button" on-click="tryLogout">LOGOUT</paper-button>
         </div>
-
-        <!--NOT LOGGED-->
-        <div class="login-component" hidden$="{{isLogged}}">
-            <!-- <p class="info">Username</p>
-            <input class="info-input" id="username" label="username" value="{{username::input}}">
-            <p class="info">Password</p>
-            <input class="info-input" id="password" label="password" type="password" value="{{password::input}}"> -->
-
-            <!-- Wrong login div, showed on Bad Credentials -->
-            <span id="wronglogin" hidden$="{{!isBadCredentials}}">The username and password you entered don't match.</span>
-            <div class="log-button paper" on-click="tryLogin" title="Login">LOGIN</div>
-            <!-- <paper-button on-click="tryLogin">test</paper-button> -->
-        </div>
-        
-        <br>
-        <hr>
-
-        <paper-input always-float-label label="Username" id="username" value="{{username::input}}"></paper-input>
-        <paper-input always-float-label label="Password" id="password" value="{{password::input}}"></paper-input>
-
-        
-        
-        <paper-input label="username">
-            <iron-icon icon="mail" slot="prefix"></iron-icon>
-            <div slot="suffix">@email.com</div>
-        </paper-input>
-
-
-        <paper-button>link</paper-button>
-        <paper-button raised>raised</paper-button>
-        <paper-button toggles raised>toggles</paper-button>
-        <paper-button disabled>disabled</paper-button>
-
     </template>
 
     <!--SCRIPT-->
     <script>
-        class OwcUiLoginBox extends Polymer.Element {
+        class OwcUiLoginBox extends  Polymer.Element {
             static get is() { return 'owc-ui-login-box'; }
             static get properties() {
                 return {
@@ -195,7 +170,7 @@
                 //Get Parameter from Input fields
                 var user = self.username;
                 var pass = self.password;
-                console.log("Auth-Demo TryLogin. USERNAME: ", user, " PASSWORD ", pass)
+                // console.log("Auth-Demo TryLogin. USERNAME: ", user, " PASSWORD ", pass)
 
                 //Call authentication-manager login  
                 self._ctx.am.login(user, pass);
@@ -203,7 +178,7 @@
                 //Wait 2 seconds before checking if user is logged
                 setTimeout(function () {
                     self.checkLogged();
-                }, 2000);
+                }, 1500);
             }
 
             //Try Logout
