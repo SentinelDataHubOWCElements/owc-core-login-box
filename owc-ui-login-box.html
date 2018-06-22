@@ -1,127 +1,82 @@
 <link rel="import" href="../polymer/polymer-element.html">
 
 <!-- Import -->
-<!-- <link rel="import" href="../../bower_components/polymer/polymer.html"> -->
-<link rel="import" href="bower_components/paper-button/paper-button.html">
-<link rel="import" href="bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-button/paper-button.html">
 
 <dom-module id="owc-ui-login-box">
     <!--VIEW-->
     <template>
         <!--Internal CSS-->
         <style>
+            
+            /* default component style */
             * {
                 font-family: 'Roboto', 'Noto', sans-serif;
                 margin: 0 auto;
+                font-weight: bold;
             }
 
-            .login-component {
-                width: 200px;
-            }
-
+            /* component title css */
             .login-title {
+                color: rgb(51, 51, 51);
                 text-align: center;
                 font-size: 1.4em;
-                font-weight: bold;
-                padding-bottom: 50px;
-                color: rgb(51, 51, 51);
+                margin-bottom: 20px;
             }
 
+            /* wrong login div */
             #wronglogin {
-                width: 180px;
-                font-size: 0.8em;
-                font-weight: bold;
                 color: rgb(190, 0, 0);
             }
 
-            /* p.info {
-                font-size: 0.7em;
-                color: rgb(137, 137, 137)
-            }
-
-            .info-input {
-                margin-bottom: 20px;
-                height: 20px;
-                border-radius: 3px;
-            }
-
-            .log-button {
-                margin-left: 0 !important;
-                width: 170px !important;
-                color: aliceblue;
-                text-align: center;
-                border-radius: 3px;
-                cursor: pointer;
-            } */
-
+            /* custom paper-button css */
             paper-button {
+                margin-top: 10px;
+                width: 90%;
+                height: 30px;
                 background: #002664;
                 color: white;
-                margin: 15px 25px;
-                padding: 5px 40px;
                 font-size: 18px;
-                font-weight: bold;
             }
-
-            paper-button[toggles][active].colorful {
-                background-color: #002664;
-            }
-
-            paper-button[toggles][active][raised].colorful {
-                background-color: rgba(66, 133, 244, 0.75);
-            }
-
-            paper-button[toggles][active][raised].signup {
-                background: rgba(216, 7, 7, 0.75) !important;
-            }
-
-            /* paper-input {
-                max-width: 400px;
-                margin: auto;
-            } */
-
-            iron-icon,
-            div[suffix] {
-                color: hsl(0, 0%, 50%);
-                margin-right: 12px;
-            }
-
         </style>
 
-        <!--Demo-1 Template. Login Component simulation-->
-        <div class="login-title">Account</div>
+        <!-- Title of Login Component -->
+        <div>
+            <div class="login-title">Account</div>
+            <!--USER NOT LOGGED-->
+            <div hidden$="{{isLogged}}">
 
-        <!--USER NOT LOGGED-->
-        <div class="login-component" hidden$="{{isLogged}}">
-            <!-- <p class="info">Username</p>
-            <input class="info-input" id="username" label="username" value="{{username::input}}">
-            <p class="info">Password</p>
-            <input class="info-input" id="password" label="password" type="password" value="{{password::input}}"> -->
-            <paper-input float-label label="Username" id="username" value="{{username::input}}"></paper-input>
-            <paper-input float-label label="Password" id="password" value="{{password::input}}"></paper-input>
+                <!-- INPUT FIELDS -->
+                <paper-input label="Username" id="username" value="{{username::input}}"></paper-input>
+                <paper-input label="Password" id="password" value="{{password::input}}" type="password"></paper-input>
 
-            <!-- Wrong login div, showed on Bad Credentials -->
-            <span id="wronglogin" hidden$="{{!isBadCredentials}}">The username and password you entered don't match.</span>
-            <br>
-            <br>
+                <!-- Wrong login div, showed on Bad Credentials -->
+                <div id="wronglogin" hidden$="{{!isBadCredentials}}">The username and password you entered don't match.</div>
 
-            <!-- <div class="log-button paper" on-click="tryLogin" title="Login">LOGIN</div> -->
-            <paper-button raised on-click="tryLogin" title="Login">LOGIN</paper-button>
-        </div>
+                <!-- Login Button -->
+                <paper-button raised on-click="tryLogin" title="Login">LOGIN</paper-button>
+            </div>
 
-        <!--USER LOGGED-->
-        <div class="login-component" hidden$="{{!isLogged}}">
-            <br>
-            <p>Logged functions here</p>
-            <br>
-            <paper-button class="log-button" on-click="tryLogout">LOGOUT</paper-button>
+            <!--USER LOGGED-->
+            <div hidden$="{{!isLogged}}">
+
+                <!-- LOGGED FUNCTIONS -->
+                <p>Logged functions entrypoint</p>
+
+                <!-- Logout Button -->
+                <paper-button class="log-button" raised on-click="tryLogout">LOGOUT</paper-button>
+            </div>
         </div>
     </template>
 
     <!--SCRIPT-->
     <script>
-        class OwcUiLoginBox extends  Polymer.Element {
-            static get is() { return 'owc-ui-login-box'; }
+        class OwcUiLoginBox extends Polymer.Element {
+            static get is() {
+                return 'owc-ui-login-box';
+            }
             static get properties() {
                 return {
                     componentName: {
@@ -161,6 +116,9 @@
             //Method called when this element is created
             constructor() {
                 super();
+
+                // TODO: Append i18n manager translations
+                // this._ctx.i18n.append(...)
             }
 
             //Try Login with usernme and password in input fields
@@ -175,7 +133,7 @@
                 //Call authentication-manager login  
                 self._ctx.am.login(user, pass);
 
-                //Wait 2 seconds before checking if user is logged
+                //Wait 1.5 seconds before checking if user is logged. TODO Async call.
                 setTimeout(function () {
                     self.checkLogged();
                 }, 1500);
