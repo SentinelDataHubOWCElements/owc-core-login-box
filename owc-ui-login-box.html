@@ -10,8 +10,8 @@
     <template>
         <!--Internal CSS-->
         <style>
-            
             /* default component style */
+
             * {
                 font-family: 'Roboto', 'Noto', sans-serif;
                 margin: 0 auto;
@@ -19,6 +19,7 @@
             }
 
             /* component title css */
+
             .login-title {
                 color: rgb(51, 51, 51);
                 text-align: center;
@@ -27,11 +28,13 @@
             }
 
             /* wrong login div */
+
             #wronglogin {
                 color: rgb(190, 0, 0);
             }
 
             /* custom paper-button css */
+
             paper-button {
                 margin-top: 10px;
                 width: 90%;
@@ -40,23 +43,37 @@
                 color: white;
                 font-size: 18px;
             }
+
+            img {
+                cursor: pointer;
+                margin-right: 10px;
+            }
         </style>
 
         <!-- Title of Login Component -->
         <div>
+            <!-- <img on-click="onLangIta" src="http://icons.iconarchive.com/icons/wikipedia/flags/256/IT-Italy-Flag-icon.png" alt="english"
+                height="42">
+            <img on-click="onLangEng" src="http://icons.iconarchive.com/icons/wikipedia/flags/256/GB-United-Kingdom-Flag-icon.png" alt="english"
+                height="42">
+            <img on-click="onLangSpa" src="http://icons.iconarchive.com/icons/wikipedia/flags/256/ES-Spain-Flag-icon.png" alt="english"
+                height="42" width="42"> -->
+
             <div class="login-title">Account</div>
             <!--USER NOT LOGGED-->
             <div hidden$="{{isLogged}}">
 
+                <h2>{{welcomeMessage}}</h2>
+
                 <!-- INPUT FIELDS -->
-                <paper-input label="Username" id="username" value="{{username::input}}"></paper-input>
-                <paper-input label="Password" id="password" value="{{password::input}}" type="password"></paper-input>
+                <paper-input label="{{userLabel}}" id="username" value="{{username::input}}"></paper-input>
+                <paper-input label="{{passLabel}}" id="password" value="{{password::input}}" type="password"></paper-input>
 
                 <!-- Wrong login div, showed on Bad Credentials -->
-                <div id="wronglogin" hidden$="{{!isBadCredentials}}">The username and password you entered don't match.</div>
+                <div id="wronglogin" hidden$="{{!isBadCredentials}}">{{wrongLogin}}</div>
 
                 <!-- Login Button -->
-                <paper-button raised on-click="tryLogin" title="Login">LOGIN</paper-button>
+                <paper-button raised on-click="tryLogin" title="Login">{{loginLabel}}</paper-button>
             </div>
 
             <!--USER LOGGED-->
@@ -66,7 +83,7 @@
                 <p>Logged functions entrypoint</p>
 
                 <!-- Logout Button -->
-                <paper-button class="log-button" raised on-click="tryLogout">LOGOUT</paper-button>
+                <paper-button class="log-button" raised on-click="tryLogout">{{logout}}</paper-button>
             </div>
         </div>
     </template>
@@ -74,16 +91,34 @@
     <!--SCRIPT-->
     <script>
         class OwcUiLoginBox extends Polymer.Element {
-            static get is() {
-                return 'owc-ui-login-box';
-            }
+
+            static get is() { return 'owc-ui-login-box'; }
             static get properties() {
                 return {
                     componentName: {
                         type: String,
                         value: 'owc-ui-login-box'
                     },
-
+                    componentLanguage: {
+                        type: String,
+                        value: 'en' //change defauwelcomeMessage language value
+                    },
+                    welcomeMessage: {
+                        type: String,
+                        value: 'welcome-default' //change default language value
+                    },
+                    wrongLogin: {
+                        type: String,
+                        value: 'wrongLogin'
+                    },
+                    loginLabel: {
+                        type: String,
+                        value: 'login-default'
+                    },
+                    logout: {
+                        type: String,
+                        value: 'logout-default'
+                    },
                     _ctx: {
                         type: Object,
                         value: {}
@@ -109,6 +144,16 @@
                     password: {
                         type: String,
                         value: ""
+                    },
+
+                    userLabel: {
+                        type: String,
+                        value: "userLabel-default"
+                    },
+
+                    passLabel: {
+                        type: String,
+                        value: "passLabel-default"
                     }
                 };
             }
@@ -117,9 +162,69 @@
             constructor() {
                 super();
 
-                // TODO: Append i18n manager translations
-                // this._ctx.i18n.append(...)
+                //Set default component language. It could check for browser default language
+                this.componentLanguage = 'en';
             }
+
+            //######## START TRANSLATIONS ########
+            //Append translations when element is ready. Throws a Warning if no i18nmanager is defined
+            ready() {
+                super.ready();
+                if (this._ctx.i18n != null && this._ctx.i18n != undefined) { //for backward compatibility
+                    this.OnReadyAppendToI18n();
+                    this.OnReadyTranslateValues(); //translate component values
+                } else {
+                    console.log("WARNING! i18nManager not defined, needed for", this.constructor.name);
+                }
+            }
+
+            //Define here all values to append to i18n Manager
+            OnReadyAppendToI18n() {
+                var self = this;
+                var i18n = this._ctx.i18n;
+
+                //Welcome
+                i18n.appendTerm("en", "Welcome", "Hello"); //a default en term can be defined, otherwised 'Welcome wil be used'
+                i18n.appendTerm("it", "Welcome", "Benvenuto");
+                i18n.appendTerm("es", "Welcome", "Bienvenida");
+
+                //Username label
+                i18n.appendTerm("it", "username", "nome utente");
+
+                //Password label
+                i18n.appendTerm("it", "password", "parola chiave");
+
+                //WrongLogin
+                i18n.appendTerm("en", "wrongLogin", "The username and password you entered don't match.");
+                i18n.appendTerm("it", "wrongLogin", "Il nome utente e la password che hai inserito non corrispondono.");
+                i18n.appendTerm("es", "wrongLogin", "El nombre de usuario y la contraseña que ingresó no coinciden.");
+
+                //Login label
+                i18n.appendTerm("en", "loginLabel", "login");
+                i18n.appendTerm("it", "loginLabel", "accedi");
+                i18n.appendTerm("es", "loginLabel", "acceso");
+
+                //Logout label
+                i18n.appendTerm("en", "logout", "logout");
+                i18n.appendTerm("it", "logout", "esci");
+                i18n.appendTerm("es", "logout", "logout");
+            }
+
+            //Perform translations
+            OnReadyTranslateValues() {
+                var self = this;
+                var i18n = this._ctx.i18n;
+                var elemLanguage = this.componentLanguage;
+
+                this.loginLabel = i18n.translate('loginLabel', elemLanguage);
+                this.logout = i18n.translate('logout', elemLanguage);
+                this.welcomeMessage = i18n.translate("Welcome", elemLanguage);
+                this.userLabel = i18n.translate("username", elemLanguage);
+                this.passLabel = i18n.translate("password", elemLanguage);
+                this.wrongLogin = i18n.translate("wrongLogin", elemLanguage);
+            }
+            //######## END TRANSLATIONS ########
+
 
             //Try Login with usernme and password in input fields
             tryLogin() {
@@ -161,6 +266,25 @@
                 var self = this;
                 self.isLogged = logg;
                 self.isBadCredentials = !logg; //Set bad Credentials to true if result is false
+            }
+
+            onLangEng() {
+                this.TranslateComponent('en');
+
+            }
+
+            onLangIta() {
+                this.TranslateComponent('it');
+
+            }
+
+            onLangSpa() {
+                this.TranslateComponent('es');
+            }
+
+            TranslateComponent(lan) {
+                this.componentLanguage = lan;
+                this.OnReadyTranslateValues();
             }
         }
         window.customElements.define(OwcUiLoginBox.is, OwcUiLoginBox);
