@@ -52,12 +52,7 @@
 
         <!-- Title of Login Component -->
         <div>
-            <!-- <img on-click="onLangIta" src="http://icons.iconarchive.com/icons/wikipedia/flags/256/IT-Italy-Flag-icon.png" alt="english"
-                height="42">
-            <img on-click="onLangEng" src="http://icons.iconarchive.com/icons/wikipedia/flags/256/GB-United-Kingdom-Flag-icon.png" alt="english"
-                height="42">
-            <img on-click="onLangSpa" src="http://icons.iconarchive.com/icons/wikipedia/flags/256/ES-Spain-Flag-icon.png" alt="english"
-                height="42" width="42"> -->
+
 
             <div class="login-title">Account</div>
             <!--USER NOT LOGGED-->
@@ -101,7 +96,7 @@
                     },
                     componentLanguage: {
                         type: String,
-                        value: 'en' //change defauwelcomeMessage language value
+                        value: 'en' //default value
                     },
                     welcomeMessage: {
                         type: String,
@@ -161,7 +156,6 @@
             //Method called when this element is created
             constructor() {
                 super();
-
                 //Set default component language. It could check for browser default language
                 this.componentLanguage = 'en';
             }
@@ -225,7 +219,6 @@
             }
             //######## END TRANSLATIONS ########
 
-
             //Try Login with usernme and password in input fields
             tryLogin() {
                 var self = this;
@@ -238,10 +231,16 @@
                 //Call authentication-manager login  
                 self._ctx.am.login(user, pass);
 
-                //Wait 1.5 seconds before checking if user is logged. TODO Async call.
-                setTimeout(function () {
-                    self.checkLogged();
-                }, 1500);
+                let promiseA = new Promise((resolve, reject) => {
+                    let wait = setTimeout(() => {
+                        resolve(self.checkLogged());
+                    }, 2000)
+                })
+
+                // //Wait 1.5 seconds before checking if user is logged. TODO Async call.
+                // setTimeout(function () {
+                //     self.checkLogged();
+                // }, 1500);
             }
 
             //Try Logout
@@ -266,20 +265,6 @@
                 var self = this;
                 self.isLogged = logg;
                 self.isBadCredentials = !logg; //Set bad Credentials to true if result is false
-            }
-
-            onLangEng() {
-                this.TranslateComponent('en');
-
-            }
-
-            onLangIta() {
-                this.TranslateComponent('it');
-
-            }
-
-            onLangSpa() {
-                this.TranslateComponent('es');
             }
 
             TranslateComponent(lan) {
