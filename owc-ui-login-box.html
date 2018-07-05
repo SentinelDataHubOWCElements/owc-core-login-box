@@ -70,12 +70,7 @@
 
             <!--USER LOGGED-->
             <div hidden$="{{!isLogged}}">
-
                 <!-- LOGGED FUNCTIONS -->
-                <!-- <p>Logged functions entrypoint</p> -->
-
-                <!-- Logout Button -->
-                <!-- <paper-button class="log-button" raised on-click="tryLogout">{{logout}}</paper-button> -->
             </div>
         </div>
     </template>
@@ -87,13 +82,13 @@
             static get is() { return 'owc-ui-login-box'; }
             static get properties() {
                 return {
+                    _ctx: {
+                        type: Object,
+                        value: {}
+                    },
                     componentName: {
                         type: String,
                         value: 'owc-ui-login-box'
-                    },
-                    componentLanguage: {
-                        type: String,
-                        value: 'en' //default value
                     },
                     welcomeMessage: {
                         type: String,
@@ -101,17 +96,12 @@
                     },
                     wrongLogin: {
                         type: String,
-                        value: 'wrongLogin'
+                        value: 'wrong-Login-default'
                     },
                     loginLabel: {
                         type: String,
                         value: 'login-default'
                     },
-                    _ctx: {
-                        type: Object,
-                        value: {}
-                    },
-                    //Local variable to set status of UI depending on this variable
                     isLogged: {
                         type: Boolean,
                         value: false
@@ -143,15 +133,15 @@
             //Method called when this element is created
             constructor() {
                 super();
-                //Set default component language. It could check for browser default language
-                this.componentLanguage = 'es';
             }
 
             //######## START TRANSLATIONS ########
             //Append translations when element is ready. Throws a Warning if no i18nmanager is defined
             ready() {
                 super.ready();
-                if (this._ctx.i18n != null && this._ctx.i18n != undefined) { //for backward compatibility
+                var self = this;
+                var i18n = this._ctx.i18n
+                if (i18n != null && i18n != undefined) { //for compatibility
                     this.OnReadyAppendToI18n();
                     this.OnReadyTranslateValues(); //translate component values
                 } else {
@@ -164,13 +154,15 @@
                 var self = this;
                 var i18n = this._ctx.i18n;
 
+                //Component values to append
                 i18n.append({
                     "Welcome": {
-                        "en": "Hello!!!",
+                        "en": "Hello",
                         "it": "Benvenuto",
                         "es": "Bienvenida",
                     },
                     "loginLabel": {
+                        "en": "login",
                         "it": "accedi",
                         "es": "acceso"
                     },
@@ -192,17 +184,16 @@
             //Perform translations
             OnReadyTranslateValues() {
                 var self = this;
-                var i18n = this._ctx.i18n;
-                var elemLanguage = this.componentLanguage;
+                var i18n = self._ctx.i18n;
 
-                this.loginLabel = i18n.translate('loginLabel', elemLanguage);
-                this.welcomeMessage = i18n.translate("Welcome", elemLanguage);
-                this.userLabel = i18n.translate("username", elemLanguage);
-                this.passLabel = i18n.translate("password", elemLanguage);
-                this.wrongLogin = i18n.translate("wrongLogin", elemLanguage);
+                this.loginLabel = i18n.translate('loginLabel', i18n.currentLanguage);
+                this.welcomeMessage = i18n.translate("Welcome", i18n.currentLanguage);
+                this.userLabel = i18n.translate("username", i18n.currentLanguage);
+                this.passLabel = i18n.translate("password", i18n.currentLanguage);
+                this.wrongLogin = i18n.translate("wrongLogin", i18n.currentLanguage);
             }
-            //######## END TRANSLATIONS ########
 
+            //######## END TRANSLATIONS ########
             //Try Login with usernme and password in input fields
             tryLogin() {
                 var self = this;
@@ -210,37 +201,20 @@
                 //Get Parameter from Input fields
                 var user = self.username;
                 var pass = self.password;
-                // console.log("Auth-Demo TryLogin. USERNAME: ", user, " PASSWORD ", pass)
 
-                //Call authentication-manager login  
+                // console.log("Auth-Demo TryLogin. USERNAME: ", user, " PASSWORD ", pass)
                 var loginResult = self._ctx.am.login(user, pass)
                     .then(function (result) {
                         if (result.status == 200) {
+                            self.isLogged = true;
                             self.remove();
                         } else {
+                            self.isLogged = false;
                             self.isBadCredentials = true;
                         }
                     }, function (result) {
                         self.isBadCredentials = true;
                     });
-            }
-
-            //Check if the user is logged, checking the authentication-manager component logged value
-            checkLogged() {
-                var self = this;
-                var result = self._ctx.am.isLogged();
-                self.setUI(result);
-            }
-
-            setUI(logg) {
-                var self = this;
-                self.isLogged = logg;
-                self.isBadCredentials = !logg; //Set bad Credentials to true if result is false
-            }
-
-            TranslateComponent(lan) {
-                this.componentLanguage = lan;
-                this.OnReadyTranslateValues();
             }
         }
         window.customElements.define(OwcUiLoginBox.is, OwcUiLoginBox);
