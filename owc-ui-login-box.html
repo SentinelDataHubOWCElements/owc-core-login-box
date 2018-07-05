@@ -52,12 +52,9 @@
 
         <!-- Title of Login Component -->
         <div>
-
-
             <div class="login-title">Account</div>
             <!--USER NOT LOGGED-->
             <div hidden$="{{isLogged}}">
-
                 <h2>{{welcomeMessage}}</h2>
 
                 <!-- INPUT FIELDS -->
@@ -75,10 +72,10 @@
             <div hidden$="{{!isLogged}}">
 
                 <!-- LOGGED FUNCTIONS -->
-                <p>Logged functions entrypoint</p>
+                <!-- <p>Logged functions entrypoint</p> -->
 
                 <!-- Logout Button -->
-                <paper-button class="log-button" raised on-click="tryLogout">{{logout}}</paper-button>
+                <!-- <paper-button class="log-button" raised on-click="tryLogout">{{logout}}</paper-button> -->
             </div>
         </div>
     </template>
@@ -110,42 +107,32 @@
                         type: String,
                         value: 'login-default'
                     },
-                    logout: {
-                        type: String,
-                        value: 'logout-default'
-                    },
                     _ctx: {
                         type: Object,
                         value: {}
                     },
-
                     //Local variable to set status of UI depending on this variable
                     isLogged: {
                         type: Boolean,
                         value: false
                     },
-
                     //Local varible to show bad credentials message div 
                     isBadCredentials: {
                         type: Boolean,
                         value: false
                     },
-
                     username: {
                         type: String,
                         value: ""
                     },
-
                     password: {
                         type: String,
                         value: ""
                     },
-
                     userLabel: {
                         type: String,
                         value: "userLabel-default"
                     },
-
                     passLabel: {
                         type: String,
                         value: "passLabel-default"
@@ -157,7 +144,7 @@
             constructor() {
                 super();
                 //Set default component language. It could check for browser default language
-                this.componentLanguage = 'en';
+                this.componentLanguage = 'es';
             }
 
             //######## START TRANSLATIONS ########
@@ -177,31 +164,29 @@
                 var self = this;
                 var i18n = this._ctx.i18n;
 
-                //Welcome
-                i18n.appendTerm("en", "Welcome", "Hello"); //a default en term can be defined, otherwised 'Welcome wil be used'
-                i18n.appendTerm("it", "Welcome", "Benvenuto");
-                i18n.appendTerm("es", "Welcome", "Bienvenida");
-
-                //Username label
-                i18n.appendTerm("it", "username", "nome utente");
-
-                //Password label
-                i18n.appendTerm("it", "password", "parola chiave");
-
-                //WrongLogin
-                i18n.appendTerm("en", "wrongLogin", "The username and password you entered don't match.");
-                i18n.appendTerm("it", "wrongLogin", "Il nome utente e la password che hai inserito non corrispondono.");
-                i18n.appendTerm("es", "wrongLogin", "El nombre de usuario y la contraseña que ingresó no coinciden.");
-
-                //Login label
-                i18n.appendTerm("en", "loginLabel", "login");
-                i18n.appendTerm("it", "loginLabel", "accedi");
-                i18n.appendTerm("es", "loginLabel", "acceso");
-
-                //Logout label
-                i18n.appendTerm("en", "logout", "logout");
-                i18n.appendTerm("it", "logout", "esci");
-                i18n.appendTerm("es", "logout", "logout");
+                i18n.append({
+                    "Welcome": {
+                        "en": "Hello!!!",
+                        "it": "Benvenuto",
+                        "es": "Bienvenida",
+                    },
+                    "loginLabel": {
+                        "it": "accedi",
+                        "es": "acceso"
+                    },
+                    "username": {
+                        "it": "nome utente",
+                    },
+                    "password": {
+                        "it": "parola chiave",
+                        "es": "contraseña "
+                    },
+                    "wrongLogin": {
+                        "it": "Il nome utente e la password che hai inserito non corrispondono.",
+                        "es": "El nombre de usuario y la contraseña que ingresó no coinciden. "
+                    }
+                })
+                i18n.logDictionary();
             }
 
             //Perform translations
@@ -211,7 +196,6 @@
                 var elemLanguage = this.componentLanguage;
 
                 this.loginLabel = i18n.translate('loginLabel', elemLanguage);
-                this.logout = i18n.translate('logout', elemLanguage);
                 this.welcomeMessage = i18n.translate("Welcome", elemLanguage);
                 this.userLabel = i18n.translate("username", elemLanguage);
                 this.passLabel = i18n.translate("password", elemLanguage);
@@ -229,29 +213,16 @@
                 // console.log("Auth-Demo TryLogin. USERNAME: ", user, " PASSWORD ", pass)
 
                 //Call authentication-manager login  
-                self._ctx.am.login(user, pass);
-
-                let promiseA = new Promise((resolve, reject) => {
-                    let wait = setTimeout(() => {
-                        resolve(self.checkLogged());
-                    }, 2000)
-                })
-
-                // //Wait 1.5 seconds before checking if user is logged. TODO Async call.
-                // setTimeout(function () {
-                //     self.checkLogged();
-                // }, 1500);
-            }
-
-            //Try Logout
-            tryLogout() {
-                var self = this;
-                var logoutResult = self._ctx.am.logout();
-
-                //If user is logged out properly, set local proper UI
-                if (logoutResult == true) {
-                    self.isLogged = !logoutResult; //local variable is the !logout result
-                }
+                var loginResult = self._ctx.am.login(user, pass)
+                    .then(function (result) {
+                        if (result.status == 200) {
+                            self.remove();
+                        } else {
+                            self.isBadCredentials = true;
+                        }
+                    }, function (result) {
+                        self.isBadCredentials = true;
+                    });
             }
 
             //Check if the user is logged, checking the authentication-manager component logged value
