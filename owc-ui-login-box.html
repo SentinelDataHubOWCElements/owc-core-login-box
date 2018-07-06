@@ -46,7 +46,7 @@
                 <div id="wronglogin" hidden$="{{!isBadCredentials}}">{{i18n('wrongLogin')}}</div>
 
                 <!-- Login Button -->
-                <paper-button raised on-click="tryLogin" title="Login">{{i18n('loginLabel')}}</paper-button> 
+                <paper-button raised on-click="tryLogin" title="Login">{{i18n('loginLabel')}}</paper-button>
             </div>
 
             <!--USER LOGGED-->
@@ -76,6 +76,37 @@
                         value: false
                     }
                 };
+            }
+
+            ready() {
+                super.ready();
+
+                //Dictionaries terms as Json object
+                var json = {
+                    "loginLabel": {
+                        "en": "login",
+                        "it": "accedi",
+                        "es": "acceso"
+                    },
+                    "password": {
+                        "it": "parola chiave",
+                        "es": "contraseña "
+                    },
+                    "username": {
+                        "it": "nome utente"
+                    },
+                    "Welcome": {
+                        "en": "Hello",
+                        "it": "Benvenuto",
+                        "es": "Bienvenida"
+                    },
+                    "wrongLogin": {
+                        "en": "The user name and password you entered did not match.",
+                        "it": "Il nome utente e la password che hai inserito non corrispondono.",
+                        "es": "El nombre de usuario y la contraseña que ingresó no coinciden. "
+                    }
+                }
+                this.append(json); //Add json to dictionaries
             }
 
             //Try Login with usernme and password in input fields
