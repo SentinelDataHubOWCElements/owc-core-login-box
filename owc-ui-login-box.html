@@ -1,77 +1,56 @@
 <link rel="import" href="../polymer/polymer-element.html">
-
-<!-- Import -->
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../paper-button/paper-button.html">
 
 <dom-module id="owc-ui-login-box">
-    <!--VIEW-->
     <template>
-        <!--Internal CSS-->
         <style>
-            /* default component style */
-
             * {
                 font-family: 'Roboto', 'Noto', sans-serif;
-                margin: 0 auto;
                 font-weight: bold;
             }
 
-            /* component title css */
-
             .login-title {
-                color: rgb(51, 51, 51);
                 text-align: center;
-                font-size: 1.4em;
-                margin-bottom: 20px;
+                font-size: px;
+                color: rgb(51, 51, 51);
             }
-
-            /* wrong login div */
 
             #wronglogin {
                 color: rgb(190, 0, 0);
             }
 
-            /* custom paper-button css */
-
             paper-button {
                 margin-top: 10px;
                 width: 90%;
                 height: 30px;
+                font-size: 18px;
                 background: #002664;
                 color: white;
-                font-size: 18px;
-            }
-
-            img {
-                cursor: pointer;
-                margin-right: 10px;
             }
         </style>
 
-        <!-- Title of Login Component -->
         <div>
             <div class="login-title">Account</div>
+
             <!--USER NOT LOGGED-->
             <div hidden$="{{isLogged}}">
-                <h2>{{welcomeMessage}}</h2>
+                <h2>{{i18n('Welcome')}}</h2>
 
                 <!-- INPUT FIELDS -->
-                <paper-input label="{{userLabel}}" id="username" value="{{username::input}}"></paper-input>
-                <paper-input label="{{passLabel}}" id="password" value="{{password::input}}" type="password"></paper-input>
+                <paper-input label="{{i18n('username')}}" id="username" value="{{username::input}}"></paper-input>
+                <paper-input label="{{i18n('password')}}" id="password" value="{{password::input}}" type="password"></paper-input>
 
                 <!-- Wrong login div, showed on Bad Credentials -->
-                <div id="wronglogin" hidden$="{{!isBadCredentials}}">{{wrongLogin}}</div>
+                <div id="wronglogin" hidden$="{{!isBadCredentials}}">{{i18n('wrongLogin')}}</div>
 
                 <!-- Login Button -->
-                <paper-button raised on-click="tryLogin" title="Login">{{loginLabel}}</paper-button>
+                <paper-button raised on-click="tryLogin" title="Login">{{i18n('loginLabel')}}</paper-button> 
             </div>
 
             <!--USER LOGGED-->
-            <div hidden$="{{!isLogged}}">
-                <!-- LOGGED FUNCTIONS -->
-            </div>
+            <div hidden$="{{!isLogged}}">logged</div>
         </div>
     </template>
 
@@ -82,137 +61,45 @@
             static get is() { return 'owc-ui-login-box'; }
             static get properties() {
                 return {
-                    _ctx: {
-                        type: Object,
-                        value: {}
-                    },
-                    componentName: {
-                        type: String,
-                        value: 'owc-ui-login-box'
-                    },
-                    welcomeMessage: {
-                        type: String,
-                        value: 'welcome-default' //change default language value
-                    },
-                    wrongLogin: {
-                        type: String,
-                        value: 'wrong-Login-default'
-                    },
-                    loginLabel: {
-                        type: String,
-                        value: 'login-default'
-                    },
                     isLogged: {
-                        type: Boolean,
-                        value: false
-                    },
-                    //Local varible to show bad credentials message div 
-                    isBadCredentials: {
                         type: Boolean,
                         value: false
                     },
                     username: {
                         type: String,
-                        value: ""
                     },
                     password: {
                         type: String,
-                        value: ""
                     },
-                    userLabel: {
-                        type: String,
-                        value: "userLabel-default"
-                    },
-                    passLabel: {
-                        type: String,
-                        value: "passLabel-default"
+                    isBadCredentials: {
+                        type: Boolean,
+                        value: false
                     }
                 };
             }
 
-            //Method called when this element is created
-            constructor() {
-                super();
-            }
-
-            //######## START TRANSLATIONS ########
-            //Append translations when element is ready. Throws a Warning if no i18nmanager is defined
-            ready() {
-                super.ready();
-                var self = this;
-                var i18n = this._ctx.i18n
-                if (i18n != null && i18n != undefined) { //for compatibility
-                    this.OnReadyAppendToI18n();
-                    this.OnReadyTranslateValues(); //translate component values
-                } else {
-                    console.log("WARNING! i18nManager not defined, needed for", this.constructor.name);
-                }
-            }
-
-            //Define here all values to append to i18n Manager
-            OnReadyAppendToI18n() {
-                var self = this;
-                var i18n = this._ctx.i18n;
-
-                //Component values to append
-                i18n.append({
-                    "Welcome": {
-                        "en": "Hello",
-                        "it": "Benvenuto",
-                        "es": "Bienvenida",
-                    },
-                    "loginLabel": {
-                        "en": "login",
-                        "it": "accedi",
-                        "es": "acceso"
-                    },
-                    "username": {
-                        "it": "nome utente",
-                    },
-                    "password": {
-                        "it": "parola chiave",
-                        "es": "contraseña "
-                    },
-                    "wrongLogin": {
-                        "it": "Il nome utente e la password che hai inserito non corrispondono.",
-                        "es": "El nombre de usuario y la contraseña que ingresó no coinciden. "
-                    }
-                })
-                i18n.logDictionary();
-            }
-
-            //Perform translations
-            OnReadyTranslateValues() {
-                var self = this;
-                var i18n = self._ctx.i18n;
-
-                this.loginLabel = i18n.translate('loginLabel', i18n.currentLanguage);
-                this.welcomeMessage = i18n.translate("Welcome", i18n.currentLanguage);
-                this.userLabel = i18n.translate("username", i18n.currentLanguage);
-                this.passLabel = i18n.translate("password", i18n.currentLanguage);
-                this.wrongLogin = i18n.translate("wrongLogin", i18n.currentLanguage);
-            }
-
-            //######## END TRANSLATIONS ########
             //Try Login with usernme and password in input fields
+            /**
+            *   @param user: Username as a string
+            *   @param pass: Password as a string
+            */
             tryLogin() {
                 var self = this;
-
-                //Get Parameter from Input fields
-                var user = self.username;
-                var pass = self.password;
+                var user = self.username; //username input field 
+                var pass = self.password; //password input field
 
                 // console.log("Auth-Demo TryLogin. USERNAME: ", user, " PASSWORD ", pass)
                 var loginResult = self._ctx.am.login(user, pass)
                     .then(function (result) {
                         if (result.status == 200) {
                             self.isLogged = true;
-                            self.remove();
+                            self.remove(); //Remove this component
                         } else {
                             self.isLogged = false;
                             self.isBadCredentials = true;
                         }
                     }, function (result) {
+                        self.isLogged = false;
                         self.isBadCredentials = true;
                     });
             }
