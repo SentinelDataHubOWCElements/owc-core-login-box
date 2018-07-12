@@ -74,75 +74,20 @@
                     isBadCredentials: {
                         type: Boolean,
                         value: false
-                    },
-                    _ctx:{
-                        type: Object,
-                        value: {},
-                        observer: '_ctxChanged'
-                    }    
+                    }
                 };
-            }
-            
-            _ctxChanged(){
-                var self = this;
-                console.log("_ctxChanged");
-                    // retrieve component dictionary from file (dictionary.json)
-                    
-
-                    if(this._ctx && this._ctx.i18n)
-                    this._ctx.i18n.append({
-                        "Attribute": {
-                            "it": "Valore",
-                            "es": "aAtributo"
-                        },
-                        "list": {
-                            "it": "lista",
-                            "es": "catálogo"
-                        },
-                        "loginLabel": {
-                            "en": "login",
-                            "it": "accedi",
-                            "es": "acceso"
-                        },
-                        "password": {
-                            "it": "parola chiave",
-                            "es": "contraseña "
-                        }
-                
-                });
-           
             }
 
             constructor(){
-                
                 super();
-                console.log("-- constructor");
-                
-
-                
             }
 
             connectedCallback() {
-                
                 super.connectedCallback();
-                console.log("connectedCallback()");
-                
-                console.log("this._ctx.i18n.dictionaries: ", this._ctx.i18n.dictionaries);
-
-                //// 
-
-               
-                
-
-
-              
-
             }
 
             ready(){
                 super.ready();
-                console.log(this.i18n.dictionaries);
-                
             }
 
             //Try Login with usernme and password in input fields
