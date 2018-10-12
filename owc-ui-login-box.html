@@ -9,32 +9,28 @@
 			.table {
 				display: table;
 				text-align: center;
-				padding: 10px 0px;
+				padding: 10px;
 				width: 100%;
-				height: 80px;
 			}
 
 			.table-cell {
 				display: table-cell;
 				vertical-align: middle;
-				width: 100px;
 			}
 
 			.login-button {
+				right: 10px;
 				width: 25%;
-				font-size: 20px;
 				color: white;
 				background: #273c75;
-				font-family: 'Roboto', 'Noto', sans-serif;
 				font-weight: bold;
 			}
 
 			#wronglogin {
-				font-weight: bold;
 				color: #c0392b;
+				font-weight: bold;
 			}
 		</style>
-
 		<!--User not Logged-->
 		<div hidden$="{{isLogged}}">
 			<h2>{{i18n('Welcome')}}</h2>
@@ -60,7 +56,6 @@
 
 	<script>
 		class OwcUiLoginBox extends Polymer.Element {
-
 			static get is() { return 'owc-ui-login-box'; }
 			static get properties() {
 				return {
@@ -81,11 +76,6 @@
 				};
 			}
 
-			/**
-				* Called every time the element is inserted into the DOM. Useful for 
-				* running setup code, such as fetching resources or rendering.
-				* Generally, you should try to delay work until this time.
-				*/
 			connectedCallback() {
 				super.connectedCallback();
 				var self = this;
@@ -98,6 +88,7 @@
 			*   @param pass: Password as a string
 			*/
 			tryLogin() {
+				console.log('Login...');
 				var self = this;
 
 				//PathVariables for HTTP request
@@ -109,24 +100,20 @@
 					switch (responseCode) { //manage behavior based on resu
 
 						case 200:
-							console.info(responseCode + " Login Successfull");
 							self.isLogged = true;
 							break;
 
 						case 401:
-							console.error('ERROR ' + responseCode + " Unauthorized");
 							self.isLogged = false;
 							self.isBadCredentials = true;
 							self.clearFields();
 							break;
 
 						case 404:
-							console.error('ERROR ' + responseCode + " Not Found . Please check url path");
 							self.isLogged = false;
 							break;
 
 						default:
-							console.error('ERROR ' + responseCode + " Unknown error. Please check baseUrl");
 							self.isLogged = false;
 							break;
 					}
@@ -135,8 +122,9 @@
 
 			onKeystroke(keyCode) {
 				var self = this;
-				if (keyCode.charCode === 13)
+				if (keyCode.charCode === 13) {
 					self.tryLogin();
+				}
 				self.isBadCredentials = false;
 			}
 
@@ -144,7 +132,7 @@
 				var self = this;
 				self.username = "";
 				self.password = "";
-				this.$.user.focus(); //focus user input again
+				self.$.user.focus(); //focus user input again
 			}
 		}
 		window.customElements.define(OwcUiLoginBox.is, OwcUiLoginBox);
