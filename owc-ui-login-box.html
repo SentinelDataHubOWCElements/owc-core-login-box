@@ -1,122 +1,140 @@
-<link rel="import" href="../polymer/polymer-element.html">
--<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../polymer/polymer-element.html"> -
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
 
 <dom-module id="owc-ui-login-box">
-    <template>
-        <style>
-            * {
-                font-family: 'Roboto', 'Noto', sans-serif;
-                font-weight: bold;
-            }
+	<template>
+		<style>
+			.table {
+				display: table;
+				text-align: center;
+				padding: 10px;
+				width: 100%;
+			}
 
-            .login-title {
-                text-align: center;
-                font-size: px;
-                color: rgb(51, 51, 51);
-            }
+			.table-cell {
+				display: table-cell;
+				vertical-align: middle;
+			}
 
-            #wronglogin {
-                color: rgb(190, 0, 0);
-            }
+			.login-button {
+				right: 10px;
+				width: 25%;
+				color: white;
+				background: #273c75;
+				font-weight: bold;
+			}
 
-            paper-button {
-                margin-top: 10px;
-                width: 90%;
-                height: 30px;
-                font-size: 18px;
-                background: #002664;
-                color: white;
-            }
+			#wronglogin {
+				color: #c0392b;
+				font-weight: bold;
+			}
+		</style>
+		<!--User not Logged-->
+		<div hidden$="{{isLogged}}">
+			<h2>{{i18n('Welcome')}}</h2>
 
-        </style>
+			<!-- Input Fields -->
+			<paper-input autofocus label="{{i18n('username')}}" id="user" on-keypress="onKeystroke" value="{{username::input}}"></paper-input>
+			<paper-input label="{{i18n('password')}}" on-keypress="onKeystroke" value="{{password::input}}" type="password"></paper-input>
 
-        <div>
-            <div class="login-title">Account</div>
+			<!-- Wrong login div, showed on Bad Credentials, resetted after any keystroke -->
+			<div id="wronglogin" hidden$="{{!isBadCredentials}}">{{i18n('Username and password don\'t match.')}}</div>
 
-            <!--USER NOT LOGGED-->
-            <div hidden$="{{isLogged}}">
-                <h2>{{i18n('Welcome')}}</h2>
+			<!-- Login Button -->
+			<div class="table">
+				<div class="table-cell">
+					<paper-button class="login-button" raised on-click="tryLogin" title="Login">{{i18n('login')}}</paper-button>
+				</div>
+			</div>
+		</div>
 
-                <!-- INPUT FIELDS -->
-                <paper-input label="{{i18n('username')}}" id="username" value="{{username::input}}"></paper-input>
-                <paper-input label="{{i18n('password')}}" id="password" value="{{password::input}}" type="password"></paper-input>
+		<!--User Logged-->
+		<div hidden$="{{!isLogged}}">Successfully Authenticated</div>
+	</template>
 
-                <!-- Wrong login div, showed on Bad Credentials -->
-                <div id="wronglogin" hidden$="{{!isBadCredentials}}">{{i18n('wrongLogin')}}</div>
+	<script>
+		class OwcUiLoginBox extends Polymer.Element {
+			static get is() { return 'owc-ui-login-box'; }
+			static get properties() {
+				return {
+					username: {
+						type: String,
+					},
+					password: {
+						type: String,
+					},
+					isBadCredentials: {
+						type: Boolean,
+						value: false
+					},
+					isLogged: {
+						type: Boolean,
+						value: false,
+					},
+				};
+			}
 
-                <!-- Login Button -->
-                <paper-button raised on-click="tryLogin" title="Login">{{i18n('login')}}</paper-button>
-            </div>
+			connectedCallback() {
+				super.connectedCallback();
+				var self = this;
+				self._ctx = ApplicationContext.getInstance().context;
+			}
 
-            <!--USER LOGGED-->
-            <div hidden$="{{!isLogged}}">logged</div>
-        </div>
-    </template>
+			//Try Login with usernme and password in input fields
+			/**
+			*   @param user: Username as a string
+			*   @param pass: Password as a string
+			*/
+			tryLogin() {
+				console.log('Login...');
+				var self = this;
 
-    <!--SCRIPT-->
-    <script>
-        class OwcUiLoginBox extends Polymer.Element {
+				//PathVariables for HTTP request
+				var user = self.username; //username input field 
+				var pass = self.password; //password input field
 
-            static get is() { return 'owc-ui-login-box'; }
-            static get properties() {
-                return {
-                    isLogged: {
-                        type: Boolean,
-                        value: false,
-                    },
-                    username: {
-                        type: String,
-                    },
-                    password: {
-                        type: String,
-                    },
-                    isBadCredentials: {
-                        type: Boolean,
-                        value: false
-                    }
-                };
-            }
+				var loginResponse = self._ctx.am.login(user, pass).then(function (response) {
+					var responseCode = response.status;
+					switch (responseCode) { //manage behavior based on resu
 
-            constructor(){
-                super();
-            }
+						case 200:
+							self.isLogged = true;
+							break;
 
-            connectedCallback() {
-                super.connectedCallback();
-            }
+						case 401:
+							self.isLogged = false;
+							self.isBadCredentials = true;
+							self.clearFields();
+							break;
 
-            ready(){
-                super.ready();
-            }
+						case 404:
+							self.isLogged = false;
+							break;
 
-            //Try Login with usernme and password in input fields
-            /**
-            *   @param user: Username as a string
-            *   @param pass: Password as a string
-            */
-            tryLogin() {
-                var self = this;
-                var user = self.username; //username input field 
-                var pass = self.password; //password input field
+						default:
+							self.isLogged = false;
+							break;
+					}
+				});
+			}
 
-                // console.log("Auth-Demo TryLogin. USERNAME: ", user, " PASSWORD ", pass)
-                var loginResult = self._ctx.am.login(user, pass)
-                    .then(function (result) {
-                        if (result.status == 200) {
-                            self.isLogged = true;
-                            self.remove(); //Remove this component
-                        } else {
-                            self.isLogged = false;
-                            self.isBadCredentials = true;
-                        }
-                    }, function (result) {
-                        self.isLogged = false;
-                        self.isBadCredentials = true;
-                    });
-            }
-        }
-        window.customElements.define(OwcUiLoginBox.is, OwcUiLoginBox);
-    </script>
+			onKeystroke(keyCode) {
+				var self = this;
+				if (keyCode.charCode === 13) {
+					self.tryLogin();
+				}
+				self.isBadCredentials = false;
+			}
+
+			clearFields() {
+				var self = this;
+				self.username = "";
+				self.password = "";
+				self.$.user.focus(); //focus user input again
+			}
+		}
+		window.customElements.define(OwcUiLoginBox.is, OwcUiLoginBox);
+	</script>
 </dom-module>
